@@ -20,6 +20,7 @@ update-java-alternatives -s java-7-oracle
 echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 apt-get -y install oracle-java7-set-default
 ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P ""
+echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
 # Add the bamboo user
 useradd -m bamboo 
@@ -33,7 +34,7 @@ chown -R bamboo /opt/bamboo-elastic-agent
 chmod -R u+r+w /opt/bamboo-elastic-agent
  
 # Instance configuration
- chown -R bamboo:bamboo /home/bamboo/
+chown -R bamboo:bamboo /home/bamboo/
  
 # Configure path variables
 echo "export PATH=/opt/bamboo-elastic-agent/bin:\$PATH" > /etc/profile.d/bamboo.sh
@@ -45,12 +46,14 @@ sed -i '14 i . /opt/bamboo-elastic-agent/etc/rc.local' /etc/rc.local
 cp /opt/bamboo-elastic-agent/etc/motd /etc/motd
 echo bamboo-5.0.2  >> /etc/motd
 
-# bootstrap the puppet configuration
-cd /home/bamboo
-git clone git@github.com:AmplifierAgency/bamboo-puppet.git /home/bamboo/puppet
-git clone git@github.com:AmplifierAgency/bamboo-deploy.git /home/bamboo/deploy
+cd /home/bamboo/puppet
+git pull
+puppet apply --modulepath=/home/bamboo/puppet/modules/ /home/bamboo/puppet/manifests/default.pp
+
+/bin/sh /home/bamboo/puppet/shell/updateAndroidSDK.sh
+/bin/sh /home/bamboo/puppet/shell/getGeolocationData.sh
 
 chown -R bamboo:bamboo /home/bamboo/
 chmod -R u+r+w /home/bamboo/
- 
+
 exit 0

@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# bootstrap the puppet configuration
+cd /home/bamboo
+git clone git@github.com:AmplifierAgency/bamboo-puppet.git /home/bamboo/puppet
+git clone git@github.com:AmplifierAgency/bamboo-deploy.git /home/bamboo/deploy
+
+chown -R bamboo:bamboo /home/bamboo/
+chmod -R u+r+w /home/bamboo/
+
 # lets install everything we need
 cd /home/bamboo/puppet
 git pull
