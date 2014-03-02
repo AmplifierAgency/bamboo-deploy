@@ -19,7 +19,6 @@ apt-get -y install oracle-java7-installer
 update-java-alternatives -s java-7-oracle
 echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 apt-get -y install oracle-java7-set-default
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
 ssh-keygen -b 4096 -t rsa -f /root/.ssh/id_rsa -P ""
 
 # Add the bamboo user
